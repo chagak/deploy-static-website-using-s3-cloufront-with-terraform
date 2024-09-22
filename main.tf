@@ -82,7 +82,7 @@ resource "aws_cloudfront_distribution" "main" {
 }
 
 # Define Data source for IAM policy
-data "aws_iam_policy_document" "cloudfront_oac_access" {
+data "aws_iam_policy_document" "cloudfront_generated_policy" {
   statement {
     principals {
       identifiers = ["cloudfront.amazonaws.com"]
@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "cloudfront_oac_access" {
 # Apply the policy above to the S3 buckets
 resource "aws_s3_bucket_policy" "main" {
   bucket = aws_s3_bucket.chaganote-static-honey-web.id
-  policy = data.aws_iam_policy_document.cloudfront_oac_access.json
+  policy = data.aws_iam_policy_document.cloudfront_generated_policy.json
 }
 
 # Route 53 Record for CloudFront
