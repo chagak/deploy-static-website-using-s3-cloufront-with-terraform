@@ -13,22 +13,25 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# import the local values from the console
-locals {
-  aws_s3_bucket = "chaganote-static-honey-web"
-  domain = "www.fodek.homes"
-  hosted_zone_id = "Z02690399EZ7LDAAPLJC"
-  acm_certificate_arn = "arn:aws:acm:us-east-1:871909687521:certificate/97aa2953-7e03-4822-93d6-7fe7c0fc6501"
+## Create an existing  S3 bucket
+resource "aws_s3_bucket" "chaganote_static_honey_web" {
+  bucket = "chaganote-static-honey"
 }
 
-# Create S3 bucket
-resource "aws_s3_bucket" "chaganote-static-honey-web" {
-  bucket = local.aws_s3_bucket # the bucket's name will be listed as "chaganote-static-honey-web"
+
+# import the local values from the console
+locals {
+  aws_s3_bucket = "chaganote-static-honey"
+  domain = "www.fodek.homes"
+  hosted_zone_id = "Z02690399EZ7LDAAPLJC"
+  acm_certificate_arn = "arn:aws:acm:us-east-1:871909687521:certificate/aec08f8f-0550-484b-b8c0-d8f43cf9777b"
 }
+
+
 
 # Create CloudFront Origin Access Control (OAC)
 resource "aws_cloudfront_origin_access_control" "main" {
-  name = "my-oac2"
+  name = "my-oac3"
   description = "Origin Access Control for accessing S3 bucket via CloudFront"
   origin_access_control_origin_type = "s3"
   signing_behavior = "always"
@@ -63,11 +66,18 @@ resource "aws_cloudfront_distribution" "main" {
 }
 
 
+  # origin {
+  #   domain_name              = data.aws_s3_bucket.chaganote_static_honey_web
+  #   origin_id                = "S3Origin"
+  #   origin_access_control_id = aws_cloudfront_origin_access_control.main.id
+  # }
+
   origin {
-    domain_name              = aws_s3_bucket.chaganote-static-honey-web.bucket_regional_domain_name
-    origin_id                = "S3Origin"
-    origin_access_control_id = aws_cloudfront_origin_access_control.main.id
-  }
+   domain_name              = "${aws_s3_bucket.chaganote_static_honey_web.bucket_domain_name}"
+   origin_id                = "S3Origin"
+   origin_access_control_id = aws_cloudfront_origin_access_control.main.id
+}
+
 
   restrictions {
     geo_restriction {
@@ -89,7 +99,7 @@ data "aws_iam_policy_document" "cloudfront_generated_policy" {
       type        = "Service"
     }
     actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.chaganote-static-honey-web.arn}/*"]
+    resources = ["${aws_s3_bucket.chaganote_static_honey_web.arn}/*"]
 
     condition {
       test    = "StringEquals"
@@ -101,7 +111,7 @@ data "aws_iam_policy_document" "cloudfront_generated_policy" {
 
 # Apply the policy above to the S3 buckets
 resource "aws_s3_bucket_policy" "main" {
-  bucket = aws_s3_bucket.chaganote-static-honey-web.id
+  bucket = aws_s3_bucket.chaganote_static_honey_web.id
   policy = data.aws_iam_policy_document.cloudfront_generated_policy.json
 }
 
