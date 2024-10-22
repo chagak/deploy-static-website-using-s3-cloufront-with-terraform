@@ -16,8 +16,17 @@ provider "aws" {
 ## Create an existing  S3 bucket
 resource "aws_s3_bucket" "chaganote_static_honey_web" {
   bucket = "chaganote-static-honey"
+  force_destroy = true
 }
+# Upload files to S3 using local-exec
+resource "null_resource" "upload_folder_to_s3" {
+  provisioner "local-exec" {
+    command = "aws s3 sync ./honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private"
+  }
 
+  depends_on = [aws_s3_bucket.chaganote_static_honey_web]
+  
+}
 
 # import the local values from the console
 locals {
