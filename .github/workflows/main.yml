@@ -28,7 +28,11 @@ jobs:
         #working-directory: .
         run: terraform init
       - name: run terraform apply on the runner
-        uses: cloudposse/github-action-atmos-terraform-apply@v2
+        run: terraform apply -auto-approve
+        # uses: dflook/terraform-apply@v1
+        # with:
+        #   path: ./
+        #   auto_approve: true
         
 
 
