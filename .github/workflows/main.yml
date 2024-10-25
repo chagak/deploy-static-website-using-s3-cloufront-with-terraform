@@ -24,9 +24,9 @@ jobs:
       - name: set up terraform on the runner
         uses: hashicorp/setup-terraform@v3
 
-      # - name: run terraform init on the runner
-      #   working-directory: .
-      #   run: terraform init
+      - name: run terraform init on the runner
+        #working-directory: .
+        run: terraform init
       # - name: run terraform apply on the runner
       #   uses: cloudposse/github-action-atmos-terraform-apply@v2
         
