@@ -18,8 +18,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # - name: checkout code
-      #   uses: actions/checkout@v4
+      - name: checkout code
+        uses: actions/checkout@v4
 
       # - name: set up terraform on the runner
       #   uses: hashicorp/setup-terraform@v3
