@@ -1,0 +1,33 @@
+name: Deploy static website
+
+on:
+  push:
+    branches: [main]
+  # pull_request:
+  #   branches: [ $default-branch]
+
+jobs:
+  build:
+    name: build and define runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: set up terraform on the runner
+        uses: hashicorp/setup-terraform@v3
+
+      - name: run terraform init on the runner
+        working-directory: .
+        run: terraform init
+      - name: run terraform apply on the runner
+        uses: cloudposse/github-action-atmos-terraform-apply@v2
+        
+
+
+
+
+
+
+
+
