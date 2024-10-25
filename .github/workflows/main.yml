@@ -28,7 +28,7 @@ jobs:
         #working-directory: .
         run: terraform init
       - name: run terraform apply on the runner
-        run: terraform apply -auto-approve
+        run: terraform destroy -auto-approve
         # uses: dflook/terraform-apply@v1
         # with:
         #   path: ./
