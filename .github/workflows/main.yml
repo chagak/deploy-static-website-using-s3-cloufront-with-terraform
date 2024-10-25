@@ -29,10 +29,7 @@ jobs:
         run: terraform init
       - name: run terraform apply on the runner
         run: terraform destroy -auto-approve
-        # uses: dflook/terraform-apply@v1
-        # with:
-        #   path: ./
-        #   auto_approve: true
+
         
 
 
