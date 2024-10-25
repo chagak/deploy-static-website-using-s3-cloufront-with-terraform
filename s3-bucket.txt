@@ -11,5 +11,4 @@ resource "null_resource" "upload_docker_folder" {
 
   depends_on = [aws_s3_bucket.example]
 }
-#C:\Users\kouev\honey-static-webapp
 
