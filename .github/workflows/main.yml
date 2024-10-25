@@ -28,7 +28,7 @@ jobs:
         #working-directory: .
         run: terraform init
       - name: run terraform apply on the runner
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve
 
         
 
