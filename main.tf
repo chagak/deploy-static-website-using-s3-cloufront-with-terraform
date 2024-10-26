@@ -40,7 +40,7 @@ locals {
 
 # Create CloudFront Origin Access Control (OAC)
 resource "aws_cloudfront_origin_access_control" "main" {
-  name = "my-oac3"
+  name = "my-oac4"
   description = "Origin Access Control for accessing S3 bucket via CloudFront"
   origin_access_control_origin_type = "s3"
   signing_behavior = "always"
