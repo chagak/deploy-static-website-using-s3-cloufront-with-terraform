@@ -40,7 +40,7 @@ locals {
 
 # Create CloudFront Origin Access Control (OAC)
 resource "aws_cloudfront_origin_access_control" "main" {
-  name = "my-oac"
+  name = "my-oac2"
   description = "Origin Access Control for accessing S3 bucket via CloudFront"
   origin_access_control_origin_type = "s3"
   signing_behavior = "always"
@@ -135,4 +135,8 @@ resource "aws_route53_record" "main" {
     name = aws_cloudfront_distribution.main.domain_name
     zone_id = aws_cloudfront_distribution.main.hosted_zone_id
   }
+}
+
+output "bucket_name" {
+  value = aws_s3_bucket.chaganote_static_honey_web.bucket
 }
