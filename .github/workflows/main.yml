@@ -28,11 +28,11 @@ jobs:
         #working-directory: .
         run: terraform init
       - name: run terraform apply on the runner
-        run: terraform apply -auto-approve
+        run: terraform destroy -auto-approve
 
       - name: upload file to s3
         run: aws s3 sync ./Webfile/honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private
-        
+
 
 
 
