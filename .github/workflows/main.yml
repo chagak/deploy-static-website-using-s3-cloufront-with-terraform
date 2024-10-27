@@ -1,14 +1,11 @@
-name: Deploy static website
+name: Deploy Static Website
 
 on:
   push:
     branches: [main]
-  # pull_request:
-  #   branches: [ $default-branch]
 
 jobs:
-  build:
-    name: build and define runner
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
@@ -18,27 +15,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: set up terraform on the runner
+      - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: run terraform init on the runner
-        #working-directory: .
+      - name: Terraform Init
         run: terraform init
-      - name: run terraform apply on the runner
+
+      - name: Terraform Apply
+        id: apply
         run: terraform apply -auto-approve
+        # Capture Terraform output values
+      - name: Get S3 Bucket Name
+        id: bucket_output
+        run: echo "bucket_name=$(terraform output -raw bucket_name)" >> $GITHUB_ENV
 
-      - name: upload file to s3
-        run: aws s3 sync ./Webfile/honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private
-
-
-
-
-
-
-
-
-
-
+      - name: Upload Files to S3 Bucket
+        run: |
+          aws s3 sync ./Webfile/honey-static-webapp s3://$bucket_name --acl private
