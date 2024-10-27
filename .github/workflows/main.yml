@@ -24,14 +24,24 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform destroy
-        id: destroy
-        run: terraform destroy -auto-approve
+      - name: Terraform apply
+        run: terraform apply -auto-approve
         # Capture Terraform output values
+
       - name: Get S3 Bucket Name
         id: bucket_output
-        run: echo "bucket_name=$(terraform output -raw bucket_name)" >> $GITHUB_ENV
-
-      - name: Upload Files to S3 Bucket
         run: |
-          aws s3 sync ./Webfile/honey-static-webapp s3://$bucket_name --acl private
+          bucket_name=$(terraform output -raw bucket_name)
+          echo "bucket_name=$bucket_name" >> $GITHUB_ENV
+
+      - name: Upload to s3
+        uses: ricardoapaes/action-s3-upload@latest
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          bucket: ${{ env.bucket_name}}
+          src: ./Webfile/honey-static-webapp
+          filename: honey-static-webapp
+          metadata: cache-control=max-age=86400
+          region: us-east-1
