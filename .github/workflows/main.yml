@@ -30,8 +30,7 @@ jobs:
       - name: run terraform apply on the runner
         run: terraform destroy -auto-approve
 
-        
-#
+
 
 
 
