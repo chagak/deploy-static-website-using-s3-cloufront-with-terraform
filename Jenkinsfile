@@ -15,7 +15,7 @@ pipeline {
 
                 // Clone the Git repository
                 git branch: 'main',
-                    url: 'https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git'
+                    url: 'https://github.com/chagak/.git'
 
                 sh "ls -lart"
             }
@@ -24,7 +24,7 @@ pipeline {
         stage('Terraform Init') {
                     steps {
                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-                            dir('deploy-static-website-using-s3-cloufront-with-terraform') {
+                            dir('') {
                             sh 'echo "=================Terraform Init=================="'
                             sh 'terraform init'
                         }
@@ -37,7 +37,7 @@ pipeline {
                 script {
                     if (params.PLAN_TERRAFORM) {
                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-                            dir('deploy-static-website-using-s3-cloufront-with-terraform') {
+                            dir() {
                                 sh 'echo "=================Terraform Plan=================="'
                                 sh 'terraform plan'
                             }
@@ -52,7 +52,7 @@ pipeline {
                 script {
                     if (params.APPLY_TERRAFORM) {
                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-                            dir('deploy-static-website-using-s3-cloufront-with-terraform') {
+                            dir() {
                                 sh 'echo "=================Terraform Apply=================="'
                                 sh 'terraform apply -auto-approve'
                             }
@@ -67,7 +67,7 @@ pipeline {
                 script {
                     if (params.DESTROY_TERRAFORM) {
                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-                            dir('deploy-static-website-using-s3-cloufront-with-terraform') {
+                            dir() {
                                 sh 'echo "=================Terraform Destroy=================="'
                                 sh 'terraform destroy -auto-approve'
                             }
