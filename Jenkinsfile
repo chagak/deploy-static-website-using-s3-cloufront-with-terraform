@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the GitHub repository containing Terraform files
-                git "https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git"
+                git branch: 'main', "https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git"
             }
         }
         
