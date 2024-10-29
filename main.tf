@@ -15,7 +15,7 @@ provider "aws" {
 
 ## Create an existing  S3 bucket
 resource "aws_s3_bucket" "chaganote_static_honey_web" {
-  bucket = "chaganote-static-honey"
+  bucket = "chaganote-static-honey2"
   force_destroy = true
 }
 # Upload files to S3 using local-exec
@@ -40,7 +40,7 @@ locals {
 
 # Create CloudFront Origin Access Control (OAC)
 resource "aws_cloudfront_origin_access_control" "main" {
-  name = "my-oac2"
+  name = "my-oac3"
   description = "Origin Access Control for accessing S3 bucket via CloudFront"
   origin_access_control_origin_type = "s3"
   signing_behavior = "always"
