@@ -37,11 +37,8 @@ pipeline {
     }
     post {
         always {
-            stage('Terraform Destroy') {
-                steps {
-                    sh 'terraform destroy -auto-approve'
-                }
-            }
+            // Run terraform destroy in case of success or failure
+            sh 'terraform destroy -auto-approve'
             cleanWs() // Optional: Cleans up the workspace
         }
     }
