@@ -38,6 +38,14 @@ pipeline {
                 sh 'terraform apply -auto-approve'
             }
         }
+
+        stage('Upload to S3') {
+            steps {
+                // Update the folder path and bucket name accordingly
+                sh "aws s3 sync ./Webfile/honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private"
+            }
+        }
+    
     }
     post {
         always {
