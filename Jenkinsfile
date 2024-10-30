@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git'
+                git branch: 'main', url: 'https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git'
             }
         }
         stage('Install AWS CLI') {
