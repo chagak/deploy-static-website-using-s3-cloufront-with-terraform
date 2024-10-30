@@ -3,6 +3,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        BUCKET_NAME = 'chaganote-static-honey' // Specify your bucket name here
     }
     stages {
         stage('Checkout') {
@@ -30,8 +31,8 @@ pipeline {
         }
         stage('Upload to S3') {
             steps {
-                // Update the folder path and bucket name accordingly
-                sh 'aws s3 sync ./Webfile/honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private'
+                // Use the environment variable for the bucket name
+                sh 'aws s3 sync ./Webfile/honey-static-webapp s3://$BUCKET_NAME --acl private'
             }
         }
     }
@@ -43,84 +44,3 @@ pipeline {
         }
     }
 }
-
-// pipeline {
-//     agent any
-
-//     parameters {
-//             booleanParam(name: 'PLAN_TERRAFORM', defaultValue: false, description: 'Check to plan Terraform changes')
-//             booleanParam(name: 'APPLY_TERRAFORM', defaultValue: false, description: 'Check to apply Terraform changes')
-//             booleanParam(name: 'DESTROY_TERRAFORM', defaultValue: false, description: 'Check to apply Terraform changes')
-//     }
-
-//     stages {
-//         stage('Clone Repository') {
-//             steps {
-//                 // Clean workspace before cloning (optional)
-//                 deleteDir()
-
-//                 // Clone the Git repository
-//                 git branch: 'main',
-//                     url: 'https://github.com/chagak/.git'
-
-//                 sh "ls -lart"
-//             }
-//         }
-
-//         stage('Terraform Init') {
-//                     steps {
-//                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-//                             dir('') {
-//                             sh 'echo "=================Terraform Init=================="'
-//                             sh 'terraform init'
-//                         }
-//                     }
-//                 }
-//         }
-
-//         stage('Terraform Plan') {
-//             steps {
-//                 script {
-//                     if (params.PLAN_TERRAFORM) {
-//                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-//                             dir() {
-//                                 sh 'echo "=================Terraform Plan=================="'
-//                                 sh 'terraform plan'
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-
-//         stage('Terraform Apply') {
-//             steps {
-//                 script {
-//                     if (params.APPLY_TERRAFORM) {
-//                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-//                             dir() {
-//                                 sh 'echo "=================Terraform Apply=================="'
-//                                 sh 'terraform apply -auto-approve'
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-
-//         stage('Terraform Destroy') {
-//             steps {
-//                 script {
-//                     if (params.DESTROY_TERRAFORM) {
-//                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentials-chaganote']]){
-//                             dir() {
-//                                 sh 'echo "=================Terraform Destroy=================="'
-//                                 sh 'terraform destroy -auto-approve'
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
