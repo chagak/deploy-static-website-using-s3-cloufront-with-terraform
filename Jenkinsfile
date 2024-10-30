@@ -1,60 +1,51 @@
 pipeline {
-    agent any  // Run on any available Jenkins agent
+    agent any
     environment {
-        // Set AWS credentials to access your AWS account
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
-
-    
     stages {
-
-        // stage('Install AWS CLI') {
-        //     steps {
-        //         sh 'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
-        //         sh 'unzip awscliv2.zip'
-        //         sh 'sudo ./aws/install'
-        //     }
-        // }
         stage('Checkout') {
             steps {
-                // Clone the GitHub repository containing Terraform files
-                git branch: 'main', url: 'https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git'
+                git 'https://github.com/chagak/deploy-static-website-using-s3-cloufront-with-terraform.git'
             }
         }
-        
+        stage('Install AWS CLI') {
+            steps {
+                sh 'curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip'
+                sh 'unzip awscliv2.zip'
+                sh 'sudo ./aws/install'
+            }
+        }
         stage('Terraform Init & Plan') {
             steps {
-                // Run Terraform commands in the root folder
-                sh 'terraform init'  // Initialize Terraform
-                sh 'terraform plan -out=tfplan'  // Generate a plan for changes
-                sh 'terraform show -no-color tfplan > tfplan.txt'  // Save the plan in text format
+                sh 'terraform init'
+                sh 'terraform plan -out=tfplan'
             }
         }
-        
         stage('Terraform Apply') {
             steps {
-                // Apply the Terraform plan to create the infrastructure
                 sh 'terraform apply -auto-approve'
             }
         }
-
         stage('Upload to S3') {
             steps {
                 // Update the folder path and bucket name accordingly
-                sh "aws s3 sync ./Webfile/honey-static-webapp s3://${aws_s3_bucket.chaganote_static_honey_web.bucket} --acl private"
+                sh 'aws s3 sync ./your-folder-path s3://your-bucket-name --acl private'
             }
         }
-    
     }
     post {
         always {
-            // Clean up workspace files after the pipeline run
-            cleanWs()
+            stage('Terraform Destroy') {
+                steps {
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+            cleanWs() // Optional: Cleans up the workspace
         }
     }
 }
-
 
 // pipeline {
 //     agent any
