@@ -32,7 +32,7 @@ pipeline {
         stage('Upload to S3') {
             steps {
                 // Use the environment variable for the bucket name
-                sh 'aws s3 sync ./Webfile/honey-static-webapp s3://$BUCKET_NAME --acl private'
+                sh 'aws s3 sync honey-static-webapp s3://$BUCKET_NAME --acl private'
             }
         }
     }
